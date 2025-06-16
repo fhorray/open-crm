@@ -1,0 +1,56 @@
+# Binários compilados
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Diretório de saída do build
+/bin/
+/build/
+/dist/
+/tmp/
+*.run
+
+# Diretório de dependências do Go
+vendor/
+
+# Arquivos gerados pelo Go
+*.log
+*.pid
+
+# Cache e artefatos
+*.prof
+*.pprof
+*.cov
+*.coverprofile
+*.testresult
+*.tmp
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# Arquivos temporários de sistema
+.DS_Store
+Thumbs.db
+
+# Git merge/rebase temporários
+*.orig
+
+# Air (hot reload)
+.air.toml
+tmp/
+
+# Arquivos do sistema operacional
+ehthumbs.db
+desktop.ini
+
+# Arquivos de ambiente locais
+.env
+.env.*
