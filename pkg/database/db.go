@@ -3,7 +3,6 @@ package database
 import (
 	"fmt"
 	"log"
-	"open-crm/core/models"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -33,9 +32,6 @@ func Connect() {
 	if err != nil {
 		log.Fatal("Error trying to connect with database: ", err)
 	}
-
-	// AutoMigrate
-	db.AutoMigrate(&models.User{}, &models.Company{})
 
 	DB = db
 	fmt.Println("✅ DB Connected")
