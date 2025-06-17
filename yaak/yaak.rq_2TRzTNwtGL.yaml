@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_2TRzTNwtGL
 createdAt: 2025-06-17T01:22:38.874517
-updatedAt: 2025-06-17T01:22:44.789939
+updatedAt: 2025-06-17T20:18:04.335466400
 workspaceId: wk_ZZMqofy76K
 folderId: fl_9XNjy5QCXE
 authentication: {}
@@ -14,5 +14,13 @@ headers: []
 method: DELETE
 name: DELETE
 sortPriority: -1750121266256.998
-url: ${[ URL ]}/users/cmbzt2e180000u0umog9zwkno
-urlParameters: []
+url: ${[ URL ]}/users/:id
+urlParameters:
+- enabled: true
+  name: :id
+  value: cmc0yol220001b8dq9hoymk1m
+  id: 5C24cAv7wR
+- enabled: true
+  name: ''
+  value: ''
+  id: NwPSxas8wY

@@ -1,19 +1,17 @@
 type: http_request
 model: http_request
-id: rq_aeUq4RqBK2
-createdAt: 2025-06-17T00:48:28.058400
-updatedAt: 2025-06-17T19:07:01.378971700
+id: rq_bU7MaEx7q9
+createdAt: 2025-06-17T15:14:13.931687600
+updatedAt: 2025-06-17T21:12:31.485265700
 workspaceId: wk_ZZMqofy76K
-folderId: fl_9XNjy5QCXE
+folderId: fl_kmx2qLh6pP
 authentication: {}
 authenticationType: null
 body:
   text: |-
     {
-      "name": "Francy Santos",
       "email": "francy@email.com",
-      "password": "1234567890",
-      "roles": "admin,user,superadmin"
+      "password": "1234567890"
     }
 bodyType: application/json
 description: ''
@@ -21,9 +19,9 @@ headers:
 - enabled: true
   name: Content-Type
   value: application/json
-  id: A4F8FtMNnK
+  id: BmHpE72tBh
 method: POST
-name: POST
-sortPriority: -1750121266256.999
-url: ${[ URL ]}/users
+name: SIGN-IN
+sortPriority: 1000.0
+url: ${[ URL ]}/auth/sign-in
 urlParameters: []

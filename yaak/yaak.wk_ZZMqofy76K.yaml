@@ -2,9 +2,10 @@ type: workspace
 model: workspace
 id: wk_ZZMqofy76K
 createdAt: 2025-06-14T01:00:58.434202
-updatedAt: 2025-06-17T00:06:55.984390
-authentication: {}
-authenticationType: null
+updatedAt: 2025-06-17T18:20:56.343106800
+authentication:
+  token: ${[ cookie.value(cookie_name=b64'bXlhcHAuYWNjZXNzX3Rva2Vu') ]}
+authenticationType: bearer
 description: ''
 headers: []
 name: CRM

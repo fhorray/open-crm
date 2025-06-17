@@ -35,7 +35,7 @@ func Connect() {
 	}
 
 	// AutoMigrate
-	db.AutoMigrate(&models.Lead{}, &models.User{})
+	db.AutoMigrate(&models.User{}, &models.Company{})
 
 	DB = db
 	fmt.Println("✅ DB Connected")
