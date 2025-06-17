@@ -73,7 +73,7 @@ func GetUserById(c *fiber.Ctx) error {
 
 	user, err := services.GetUserById(id)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "User not found."})
+		return c.Status(404).JSON(fiber.Map{"error": "User not found"})
 	}
 
 	return c.JSON(user)

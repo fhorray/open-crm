@@ -19,5 +19,6 @@ func registerUserRoutes(router fiber.Router) {
 func RegisterRoutes(app *fiber.App) {
 	v1 := app.Group("/v1")
 
+	// Register Routes
 	registerUserRoutes(v1)
 }

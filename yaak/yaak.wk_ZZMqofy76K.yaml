@@ -1,0 +1,14 @@
+type: workspace
+model: workspace
+id: wk_ZZMqofy76K
+createdAt: 2025-06-14T01:00:58.434202
+updatedAt: 2025-06-17T00:06:55.984390
+authentication: {}
+authenticationType: null
+description: ''
+headers: []
+name: CRM
+encryptionKeyChallenge: eUE0azNuQwH+lXwkAaRYRNogXVqZDFu+eQ8flrBaWfSICJjghnWzy62EqbZWveOtCrWSMJs9WZUc3WLcWE2FgjGaxQTsvKyxdoWlp2M4+g1Gz9b9mXLImKPi1MxRBBeCMWo=
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0
