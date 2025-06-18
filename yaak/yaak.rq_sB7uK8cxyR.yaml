@@ -1,10 +1,10 @@
 type: http_request
 model: http_request
-id: rq_S6AvjN6zVn
-createdAt: 2025-06-17T01:10:17.377382
-updatedAt: 2025-06-18T20:13:11.621334
+id: rq_sB7uK8cxyR
+createdAt: 2025-06-18T19:56:21.601574700
+updatedAt: 2025-06-18T19:56:56.287709400
 workspaceId: wk_ZZMqofy76K
-folderId: fl_9XNjy5QCXE
+folderId: fl_3xo3NfSdAg
 authentication: {}
 authenticationType: null
 body: {}
@@ -13,14 +13,14 @@ description: ''
 headers: []
 method: GET
 name: GET
-sortPriority: 2000.0
-url: ${[ URL ]}/users/:id
+sortPriority: -875060633128.5
+url: ${[ URL ]}/orgs/:id
 urlParameters:
 - enabled: true
   name: :id
-  value: cmbzur9pz00007lumclvilr7f
+  value: 7bfb9aef-c5eb-4904-896e-20eb651d2fd9
   id: XDP3MH4qdu
 - enabled: true
   name: ''
   value: ''
-  id: AZ7KWQDhnB
+  id: 9ZAu3IuFuc

@@ -3,6 +3,7 @@ module open-crm
 go 1.24.4
 
 require (
+	github.com/MarceloPetrucio/go-scalar-api-reference v0.0.0-20240521013641-ce5d2efe0e06 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect

@@ -20,7 +20,7 @@ func CheckRoles(roles string) fiber.Handler {
 			})
 		}
 
-		user, ok := userCtx.(*models.User)
+		user, ok := userCtx.(models.UserResponseDTO)
 		if !ok {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  fiber.StatusInternalServerError,

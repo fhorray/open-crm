@@ -130,14 +130,22 @@ func SignUp(c *fiber.Ctx) error {
 		Path:     "/",
 	})
 
+	// Parse JWT
+	parsedAcToken, err := utils.ParseJWT(tokens.AccessToken)
+	if err != nil {
+		return utils.SendResponse(c, utils.APIResponse{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	claims := parsedAcToken.Claims.(jwt.MapClaims)
+
 	return utils.SendResponse(c, utils.APIResponse{
 		Status: http.StatusCreated,
-		Data: models.User{
-			ID:    user.ID,
-			Name:  user.Name,
-			Email: user.Email,
-			Image: user.Image,
-			Roles: user.Roles,
+		Data: models.GetSessionResponseDTO{
+			Session: claims,
+			User:    user,
 		},
 	})
 }

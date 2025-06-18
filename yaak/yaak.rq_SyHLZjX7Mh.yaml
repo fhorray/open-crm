@@ -1,0 +1,26 @@
+type: http_request
+model: http_request
+id: rq_SyHLZjX7Mh
+createdAt: 2025-06-18T19:22:54.841944800
+updatedAt: 2025-06-18T19:38:23.040333700
+workspaceId: wk_ZZMqofy76K
+folderId: fl_3xo3NfSdAg
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "name": "Organization Test"
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: pfVtavpaKr
+method: POST
+name: POST
+sortPriority: -1750121266257.0
+url: ${[ URL ]}/orgs
+urlParameters: []

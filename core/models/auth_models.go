@@ -42,6 +42,6 @@ type Session struct {
 }
 
 type GetSessionResponseDTO struct {
-	Session jwt.MapClaims `json:"session"`
-	User    User          `json:"user"`
+	Session jwt.MapClaims    `json:"session"`
+	User    *UserResponseDTO `json:"user"`
 }

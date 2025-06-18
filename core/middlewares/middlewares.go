@@ -16,6 +16,8 @@ func Middlewares(app *fiber.App) {
 		Format: "[${time}] ${status} - ${latency} ${method} ${path}\n",
 	}))
 
+	app.Static("/docs/swagger.json", "./docs/swagger.json")
+
 	// Cors Middleware
 	app.Use(Cors())
 

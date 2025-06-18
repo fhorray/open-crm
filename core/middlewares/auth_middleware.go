@@ -13,7 +13,10 @@ import (
 func AuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		// Ignore auth for specific paths
-		if strings.HasPrefix(c.Path(), "/v1/auth/sign-in") || strings.HasPrefix(c.Path(), "/v1/auth/sign-up") {
+		if strings.HasPrefix(c.Path(), "/v1/auth/sign-in") ||
+			strings.HasPrefix(c.Path(), "/v1/auth/sign-up") ||
+			strings.HasPrefix(c.Path(), "/reference") ||
+			strings.HasPrefix(c.Path(), "/swagger.json") {
 			return c.Next()
 		}
 
@@ -64,7 +67,7 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		c.Locals("user", &user)
+		c.Locals("user", *user)
 		return c.Next()
 	}
 }

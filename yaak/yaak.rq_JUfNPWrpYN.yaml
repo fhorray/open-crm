@@ -1,8 +1,8 @@
 type: http_request
 model: http_request
-id: rq_2TRzTNwtGL
-createdAt: 2025-06-17T01:22:38.874517
-updatedAt: 2025-06-18T20:13:11.629654
+id: rq_JUfNPWrpYN
+createdAt: 2025-06-18T20:13:09.333682400
+updatedAt: 2025-06-18T20:13:40.329853900
 workspaceId: wk_ZZMqofy76K
 folderId: fl_9XNjy5QCXE
 authentication: {}
@@ -11,16 +11,16 @@ body: {}
 bodyType: null
 description: ''
 headers: []
-method: DELETE
-name: DELETE
-sortPriority: 4000.0
-url: ${[ URL ]}/users/:id
+method: GET
+name: GET USER's ORG
+sortPriority: 0.0
+url: ${[ URL ]}/users/:id/orgs
 urlParameters:
 - enabled: true
   name: :id
-  value: 662af9ad-366d-4829-b392-9a88fb7b988d
-  id: 5C24cAv7wR
+  value: 3f752b75-4977-4f19-86da-f99098f30950
+  id: XDP3MH4qdu
 - enabled: true
   name: ''
   value: ''
-  id: MpRdW0mhTa
+  id: kueDB8sHjH

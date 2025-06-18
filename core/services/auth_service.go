@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"open-crm/core/models"
+	"open-crm/core/repositories"
 	"open-crm/pkg/config"
 	"open-crm/utils"
 )
@@ -16,15 +17,18 @@ func SignIn(email, password string) (models.SignInResponseDTO, error) {
 		return models.SignInResponseDTO{}, errors.New("user not found")
 	}
 
-	// Check Password
-	matchPassword := utils.CheckPasswordHash(user.Password, password)
+	// Get Credential Account (provider_id = "credential")
+	account, err := repositories.GetAccountByUserAndProvider(user.ID.String(), "credential")
+	if err != nil {
+		return models.SignInResponseDTO{}, errors.New("account not found")
+	}
 
-	// if password matches generate token
-	if !matchPassword {
+	// Check Password
+	if ok := utils.CheckPasswordHash(account.Password, password); !ok {
 		return models.SignInResponseDTO{}, errors.New("invalid credentials")
 	}
 
-	// generate jwt-token
+	// Token payload
 	tokenData := map[string]any{
 		"id":    user.ID,
 		"name":  user.Name,
@@ -40,7 +44,7 @@ func SignIn(email, password string) (models.SignInResponseDTO, error) {
 	// Refresh Token
 	rfToken, err := utils.GenerateJWT(tokenData, config.Cfg.AUTH.JWT_REFRESH_TOKEN_EXPIRES_IN, "", "")
 	if err != nil {
-		return models.SignInResponseDTO{}, fmt.Errorf("error generating access token: %w", err)
+		return models.SignInResponseDTO{}, fmt.Errorf("error generating refresh token: %w", err)
 	}
 
 	return models.SignInResponseDTO{

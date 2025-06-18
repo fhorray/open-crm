@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_neUHBL85mM
 createdAt: 2025-06-17T21:08:32.812256900
-updatedAt: 2025-06-17T21:18:16.794167
+updatedAt: 2025-06-18T20:13:11.633558300
 workspaceId: wk_ZZMqofy76K
 folderId: fl_9XNjy5QCXE
 authentication: {}
@@ -21,7 +21,7 @@ headers:
   id: iQfNxaZkHG
 method: PATCH
 name: PATCH
-sortPriority: -1750121266256.997
+sortPriority: 5000.0
 url: ${[ URL ]}/users/:id
 urlParameters:
 - enabled: true

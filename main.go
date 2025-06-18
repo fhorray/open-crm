@@ -1,6 +1,7 @@
 package main
 
 import (
+	"open-crm/core/controllers"
 	"open-crm/core/middlewares"
 	"open-crm/core/routes"
 	"open-crm/pkg/config"
@@ -10,11 +11,10 @@ import (
 )
 
 func main() {
-
 	// Load .env Variables
 	config.Load()
 
-	// Conect to db
+	// Connect to DB
 	database.Connect()
 
 	app := fiber.New()
@@ -22,8 +22,11 @@ func main() {
 	// Middlewares
 	middlewares.Middlewares(app)
 
-	// Routing
+	// Routes
 	routes.RegisterRoutes(app)
+
+	// Serve Scalar API Reference using Fiber
+	app.Get("/reference", controllers.ScalarHandler())
 
 	app.Listen(":8787")
 }
