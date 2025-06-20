@@ -5,6 +5,7 @@ import "open-crm/internal/app/models"
 // Converte um único User em UserResponseDTO
 func ToUserResponseDTO(user models.User) *models.UserResponseDTO {
 	return &models.UserResponseDTO{
+		ID:             user.ID,
 		OrganizationID: user.OrganizationID,
 		Name:           user.Name,
 		Email:          user.Email,

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"open-crm/internal/app/models"
 	"open-crm/internal/app/repositories"
@@ -201,9 +202,11 @@ func GetSession(c *fiber.Ctx) error {
 	// Tente encontrar sessão pelo access token, se não achar, tente pelo refresh token
 	var session *models.Session
 	var err error
+	fmt.Println("ACCESS TOKEN: ", acToken)
 
 	if acToken != "" {
 		session, err = sessionRepo.FindByToken(acToken)
+
 		if err != nil || session == nil {
 			// tenta pelo refresh token
 			if rfToken != "" {
@@ -211,13 +214,13 @@ func GetSession(c *fiber.Ctx) error {
 				if err != nil || session == nil {
 					return utils.SendResponse(c, utils.APIResponse{
 						Status:  http.StatusUnauthorized,
-						Message: "Session not found",
+						Message: "session not found",
 					})
 				}
 			} else {
 				return utils.SendResponse(c, utils.APIResponse{
 					Status:  http.StatusUnauthorized,
-					Message: "Session not found",
+					Message: "session not found",
 				})
 			}
 		}
@@ -226,7 +229,7 @@ func GetSession(c *fiber.Ctx) error {
 		if err != nil || session == nil {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
-				Message: "Session not found",
+				Message: "session not found",
 			})
 		}
 	}

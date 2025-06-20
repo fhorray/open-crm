@@ -12,6 +12,7 @@ type SessionRepository interface {
 	Create(session *models.Session) error
 	FindByToken(token string) (*models.Session, error)
 	DeleteSession(token string) error
+	DeleteUserSessions(userId uuid.UUID) error
 }
 
 type sessionRepository struct {
@@ -42,7 +43,7 @@ func (r *sessionRepository) Create(session *models.Session) error {
 // Find Session by Token
 func (r *sessionRepository) FindByToken(token string) (*models.Session, error) {
 	var session models.Session
-	err := r.db.Where("token = ?", token).First(&session).Error
+	err := r.db.Where("access_token = ?", token).First(&session).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,5 +52,10 @@ func (r *sessionRepository) FindByToken(token string) (*models.Session, error) {
 
 // Delete Session
 func (r *sessionRepository) DeleteSession(token string) error {
-	return r.db.Where("token = ?", token).Delete(&models.Session{}).Error
+	return r.db.Where("access_token = ?", token).Delete(&models.Session{}).Error
+}
+
+// Delete User Sessions
+func (r *sessionRepository) DeleteUserSessions(userId uuid.UUID) error {
+	return r.db.Where("user_id = ?", userId).Delete(&models.Session{}).Error
 }

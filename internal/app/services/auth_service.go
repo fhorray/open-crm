@@ -109,14 +109,13 @@ func (s *authService) Register(req *models.RegisterRequestDTO) (*models.GetSessi
 		return nil, err
 	}
 
-	// Retorna a sessão real com ID preenchido corretamente
 	return &models.GetSessionResponseDTO{
 		User:    utils.ToUserResponseDTO(*user),
 		Session: session,
 	}, nil
 }
 
-// Sign in
+// Login
 func (s *authService) Login(req *models.LoginRequestDTO) (*models.GetSessionResponseDTO, error) {
 	// Buscar o usuário por email
 	user, err := s.userRepo.FindByEmail(req.Email)
@@ -124,22 +123,28 @@ func (s *authService) Login(req *models.LoginRequestDTO) (*models.GetSessionResp
 		return nil, errors.New("user not found")
 	}
 
-	// Buscar a conta do usuário com provider "credential"
+	// Get users' account by provider "credential"
 	account, err := s.accountRepo.FindByUserAndProvider(user.ID, "credential")
 	if err != nil || account == nil {
 		return nil, errors.New("account not found")
 	}
 
-	// Verificar a senha
-	if !utils.CheckPasswordHash(req.Password, account.Password) {
+	// Delete users sessions from DB
+	err = s.sessionRepo.DeleteUserSessions(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Verify password
+	if !utils.CheckPasswordHash(account.Password, req.Password) {
 		return nil, errors.New("invalid credentials")
 	}
 
-	// Payload do token
+	// Token Payload
 	tokenData := map[string]any{
-		"id":    user.ID,
-		"name":  user.Name,
-		"email": user.Email,
+		"user_id": user.ID,
+		"name":    user.Name,
+		"email":   user.Email,
 	}
 
 	// Gerar tokens

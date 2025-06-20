@@ -59,11 +59,11 @@ func AuthMiddleware() fiber.Handler {
 		}
 
 		// Extrair user id do claims
-		userIDStr, ok := claims["id"].(string)
+		userIDStr, ok := claims["user_id"].(string)
 		if !ok {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
-				Message: "Unauthorized: invalid token claims (id missing)",
+				Message: "Unauthorized: invalid token claims (user_id missing)",
 			})
 		}
 
