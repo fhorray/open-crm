@@ -1,11 +1,10 @@
 package middlewares
 
 import (
+	"open-crm/internal/app/models"
+	"open-crm/pkg/utils"
 	"slices"
 	"strings"
-
-	"open-crm/core/models"
-	"open-crm/utils"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,10 +1,11 @@
 package main
 
 import (
-	"open-crm/core/controllers"
-	"open-crm/core/middlewares"
+	"open-crm/config"
 	"open-crm/core/routes"
-	"open-crm/pkg/config"
+	"open-crm/internal/app/handlers"
+	"open-crm/internal/app/middlewares"
+
 	"open-crm/pkg/database"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,7 +27,7 @@ func main() {
 	routes.RegisterRoutes(app)
 
 	// Serve Scalar API Reference using Fiber
-	app.Get("/reference", controllers.ScalarHandler())
+	app.Get("/reference", handlers.ScalarHandler())
 
 	app.Listen(":8787")
 }

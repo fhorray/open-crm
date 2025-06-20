@@ -1,15 +1,13 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
 type Account struct {
-	ID                    uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	CommonModel
 	UserID                uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
-	User                  User      `gorm:"foreignKey:UserID" json:"user,omitempty"`
+	User                  User      `gorm:"foreignKey:UserID" json:"user"`
 	ProviderID            string    `gorm:"not null;default:credential" json:"provider_id"`
 	AccessToken           string    `json:"access_token,omitempty"`
 	RefreshToken          string    `json:"refresh_token,omitempty"`
@@ -18,8 +16,6 @@ type Account struct {
 	IDToken               string    `json:"id_token,omitempty"`
 	Scope                 string    `json:"scope,omitempty"`
 	Password              string    `json:"password,omitempty"`
-	CreatedAt             time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt             time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (Account) TableName() string {
@@ -34,7 +30,7 @@ type CreateAccountDTO struct {
 }
 
 type AccountResponseDTO struct {
-	ID                    uuid.UUID `json:"id"`
+	CommonModel
 	UserID                uuid.UUID `json:"user_id"`
 	User                  User      `json:"user,omitempty"`
 	ProviderID            string    `json:"provider_id"`
@@ -45,6 +41,4 @@ type AccountResponseDTO struct {
 	IDToken               string    `json:"id_token"`
 	Scope                 string    `json:"scope"`
 	Password              string    `json:"-"`
-	CreatedAt             time.Time `json:"created_at"`
-	UpdatedAt             time.Time `json:"updated_at"`
 }

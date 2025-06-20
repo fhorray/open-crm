@@ -1,11 +1,11 @@
-package controllers
+package handlers
 
 import (
 	"net/http"
-	"open-crm/core/models"
-	"open-crm/core/repositories"
-	"open-crm/core/services"
-	"open-crm/utils"
+	"open-crm/internal/app/models"
+	"open-crm/internal/app/repositories"
+	"open-crm/internal/app/services"
+	"open-crm/pkg/utils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

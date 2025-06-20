@@ -54,6 +54,17 @@ CREATE TABLE core.accounts (
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now()
 );
+
+CREATE TABLE core.sessions (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL REFERENCES core.users(id) ON DELETE CASCADE,
+  access_token text NOT NULL UNIQUE,
+  refresh_token text NOT NULL UNIQUE,
+  access_token_expires_at timestamp NOT NULL,
+  refresh_token_expires_at timestamp NOT NULL,
+  created_at timestamp DEFAULT now(),
+  updated_at timestamp DEFAULT now()
+);
 -- +goose StatementEnd
 
 -- +goose Down

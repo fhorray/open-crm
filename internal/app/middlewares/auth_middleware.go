@@ -2,17 +2,18 @@ package middlewares
 
 import (
 	"net/http"
-	"open-crm/core/services"
-	"open-crm/utils"
+	"open-crm/internal/app/services"
+	"open-crm/pkg/utils"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 func AuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// Ignore auth for specific paths
+		// Ignorar autenticação para certas rotas
 		if strings.HasPrefix(c.Path(), "/v1/auth/sign-in") ||
 			strings.HasPrefix(c.Path(), "/v1/auth/sign-up") ||
 			strings.HasPrefix(c.Path(), "/reference") ||
@@ -23,7 +24,7 @@ func AuthMiddleware() fiber.Handler {
 		authHeader := c.Get("Authorization")
 		rfToken := c.Cookies("myapp.refresh_token")
 
-		// Must have either access token or refresh token
+		// Deve ter access token ou refresh token
 		if !strings.HasPrefix(authHeader, "Bearer ") && rfToken == "" {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
@@ -40,7 +41,7 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		// Parse JWT
+		// Parse do JWT
 		parsedAcToken, err := utils.ParseJWT(acToken)
 		if err != nil {
 			return utils.SendResponse(c, utils.APIResponse{
@@ -49,9 +50,7 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		claims := parsedAcToken.Claims.(jwt.MapClaims)
-
-		userId, ok := claims["id"].(string)
+		claims, ok := parsedAcToken.Claims.(jwt.MapClaims)
 		if !ok {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
@@ -59,7 +58,24 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		user, err := services.GetUserById(userId)
+		// Extrair user id do claims
+		userIDStr, ok := claims["id"].(string)
+		if !ok {
+			return utils.SendResponse(c, utils.APIResponse{
+				Status:  http.StatusUnauthorized,
+				Message: "Unauthorized: invalid token claims (id missing)",
+			})
+		}
+
+		userID, err := uuid.Parse(userIDStr)
+		if err != nil {
+			return utils.SendResponse(c, utils.APIResponse{
+				Status:  http.StatusUnauthorized,
+				Message: "Unauthorized: invalid user ID format",
+			})
+		}
+
+		user, err := services.GetUserById(userID)
 		if err != nil {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
@@ -67,7 +83,9 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
+		// Salva o usuário no contexto local
 		c.Locals("user", *user)
+
 		return c.Next()
 	}
 }

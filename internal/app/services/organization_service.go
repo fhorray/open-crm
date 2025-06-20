@@ -1,8 +1,8 @@
 package services
 
 import (
-	"open-crm/core/models"
-	"open-crm/core/repositories"
+	"open-crm/internal/app/models"
+	"open-crm/internal/app/repositories"
 	"open-crm/pkg/database"
 
 	"github.com/google/uuid"

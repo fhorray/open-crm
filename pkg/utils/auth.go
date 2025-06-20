@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"open-crm/core/models"
+	"open-crm/internal/app/models"
 	"slices"
 )
 

@@ -1,13 +1,15 @@
-package controllers
+package handlers
 
 import (
 	"net/http"
-	"open-crm/core/models"
-	"open-crm/core/services"
-	"open-crm/utils"
+	"open-crm/internal/app/models"
+	"open-crm/internal/app/services"
+	"open-crm/pkg/utils"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 var validate = validator.New()
@@ -38,7 +40,7 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	// Call service toc reate user
+	// Call service to create user
 	user, err := services.CreateUser(payload)
 	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
@@ -51,7 +53,6 @@ func CreateUser(c *fiber.Ctx) error {
 	return utils.SendResponse(c, utils.APIResponse{
 		Status: http.StatusCreated,
 		Data: models.User{
-			ID:    user.ID,
 			Name:  user.Name,
 			Email: user.Email,
 			Image: user.Image,
@@ -78,11 +79,12 @@ func GetAllUsers(c *fiber.Ctx) error {
 
 // Get User By Id
 func GetUserById(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id == "" {
+	idStr := c.Params("id")
+	id, err := uuid.Parse(strings.TrimSpace(idStr))
+	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid ID",
+			Message: "Invalid ID format",
 		})
 	}
 
@@ -102,16 +104,16 @@ func GetUserById(c *fiber.Ctx) error {
 
 // Update User
 func UpdateUser(c *fiber.Ctx) error {
-	var payload models.User
-	id := c.Params("id")
-
-	if id == "" {
+	idStr := c.Params("id")
+	id, err := uuid.Parse(strings.TrimSpace(idStr))
+	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid ID",
+			Message: "Invalid ID format",
 		})
 	}
 
+	var payload models.User
 	// Parse body
 	if err := c.BodyParser(&payload); err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
@@ -134,7 +136,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user, err := services.UpdateUser(id, payload)
+	user, err := services.UpdateUser(id, &payload)
 	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusNotFound,
@@ -150,11 +152,12 @@ func UpdateUser(c *fiber.Ctx) error {
 
 // Delete User
 func DeleteUser(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if id == "" {
+	idStr := c.Params("id")
+	id, err := uuid.Parse(strings.TrimSpace(idStr))
+	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid ID",
+			Message: "Invalid ID format",
 		})
 	}
 

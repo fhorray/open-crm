@@ -7,20 +7,16 @@ import (
 )
 
 type User struct {
-	ID             uuid.UUID    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	CommonModel
 	OrganizationID *uuid.UUID   `gorm:"type:uuid" json:"organization_id"`
-	Organization   Organization `gorm:"foreignKey:OrganizationID" json:"organization,omitempty"`
-
-	Roles         string    `gorm:"not null;default:user" json:"roles"`
-	Name          string    `gorm:"not null" json:"name"`
-	Email         string    `gorm:"unique;not null" json:"email"`
-	EmailVerified bool      `gorm:"default:false" json:"email_verified"`
-	Image         string    `json:"image,omitempty"`
-	IsActive      bool      `gorm:"default:true" json:"is_active"`
-	CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt     time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-
-	Accounts []Account `gorm:"foreignKey:UserID" json:"accounts,omitempty"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID" json:"organization"`
+	Roles          string       `gorm:"not null;default:user" json:"roles"`
+	Name           string       `gorm:"not null" json:"name"`
+	Email          string       `gorm:"unique;not null" json:"email"`
+	EmailVerified  bool         `gorm:"default:false" json:"email_verified"`
+	Image          string       `json:"image,omitempty"`
+	IsActive       bool         `gorm:"default:true" json:"is_active"`
+	Accounts       []Account    `gorm:"foreignKey:UserID" json:"accounts,omitempty"`
 }
 
 func (User) TableName() string {

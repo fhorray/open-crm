@@ -1,11 +1,10 @@
 package utils
 
-import "open-crm/core/models"
+import "open-crm/internal/app/models"
 
 // Converte um único User em UserResponseDTO
-func ToUserResponseDTO(user models.User) models.UserResponseDTO {
-	return models.UserResponseDTO{
-		ID:             user.ID,
+func ToUserResponseDTO(user models.User) *models.UserResponseDTO {
+	return &models.UserResponseDTO{
 		OrganizationID: user.OrganizationID,
 		Name:           user.Name,
 		Email:          user.Email,
@@ -19,10 +18,11 @@ func ToUserResponseDTO(user models.User) models.UserResponseDTO {
 }
 
 // Converte um slice de User em um slice de UserResponseDTO
-func ToUserResponseDTOs(users []models.User) []models.UserResponseDTO {
+func ToUserResponseDTOs(users []models.User) *[]models.UserResponseDTO {
 	result := make([]models.UserResponseDTO, 0, len(users))
 	for _, user := range users {
-		result = append(result, ToUserResponseDTO(user))
+		dto := ToUserResponseDTO(user)
+		result = append(result, *dto) // desreferencia para armazenar o valor, não o ponteiro
 	}
-	return result
+	return &result
 }

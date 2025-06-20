@@ -1,19 +1,22 @@
 package services
 
 import (
-	"open-crm/core/models"
-	"open-crm/core/repositories"
+	"open-crm/internal/app/models"
+	"open-crm/internal/app/repositories"
+	"open-crm/pkg/database"
 
 	"github.com/google/uuid"
 )
 
 // CreateAccount
 func CreateAccount(payload *models.CreateAccountDTO) error {
+	accRepo := repositories.NewAccountRepository(database.DB)
+
 	account := &models.Account{
-		ID:       uuid.New(),
 		UserID:   uuid.MustParse(payload.UserID),
 		Password: payload.Password,
 	}
 
-	return repositories.CreateAccount(account)
+	_, err := accRepo.Create(account)
+	return err
 }

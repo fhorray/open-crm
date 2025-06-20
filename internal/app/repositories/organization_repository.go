@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"open-crm/core/models"
+	"open-crm/internal/app/models"
 	"open-crm/pkg/database"
 
 	"github.com/google/uuid"

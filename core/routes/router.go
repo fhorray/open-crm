@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"open-crm/core/controllers"
-	"open-crm/core/middlewares"
+	"open-crm/internal/app/handlers"
+	"open-crm/internal/app/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,38 +11,38 @@ import (
 func registerAuthRoutes(router fiber.Router) {
 	r := router.Group("/auth")
 
-	r.Get("/get-session", controllers.GetSession)
-	r.Post("/sign-in", controllers.SignIn)
-	r.Post("/sign-up", controllers.SignUp)
-	r.Post("/sign-out", controllers.SignOut)
+	r.Get("/get-session", handlers.GetSession)
+	r.Post("/sign-in", handlers.Login)
+	r.Post("/sign-up", handlers.Register)
+	r.Post("/sign-out", handlers.Logout)
 }
 
 // Users
 func registerUserRoutes(router fiber.Router) {
 	r := router.Group("/users")
 
-	r.Post("/", middlewares.CheckRoles("superadmin,admin"), controllers.CreateUser)
-	r.Get("/", middlewares.CheckRoles("superadmin,admin"), controllers.GetAllUsers)
-	r.Get("/:id", middlewares.CheckRoles("superadmin,admin"), controllers.GetUserById)
-	r.Patch("/:id", middlewares.CheckRoles("superadmin,admin,user"), controllers.UpdateUser)
-	r.Delete("/:id", middlewares.CheckRoles("superadmin,admin"), controllers.DeleteUser)
+	r.Post("/", middlewares.CheckRoles("superadmin,admin"), handlers.CreateUser)
+	r.Get("/", middlewares.CheckRoles("superadmin,admin"), handlers.GetAllUsers)
+	r.Get("/:id", middlewares.CheckRoles("superadmin,admin"), handlers.GetUserById)
+	r.Patch("/:id", middlewares.CheckRoles("superadmin,admin,user"), handlers.UpdateUser)
+	r.Delete("/:id", middlewares.CheckRoles("superadmin,admin"), handlers.DeleteUser)
 }
 
 // Organizations
 func registerOrganizationsRoutes(router fiber.Router) {
 	r := router.Group("/orgs")
 
-	r.Post("/", middlewares.CheckRoles("superadmin,admin"), controllers.CreateOrganization)
-	r.Get("/:id", middlewares.CheckRoles("superadmin,admin,user,owner"), controllers.GetOrganizationByID)
+	r.Post("/", middlewares.CheckRoles("superadmin,admin"), handlers.CreateOrganization)
+	r.Get("/:id", middlewares.CheckRoles("superadmin,admin,user,owner"), handlers.GetOrganizationByID)
 }
 
 // Relationshp Routes
 func registerRelationshipRoutes(router fiber.Router) {
 	// Rota: /users/:id/orgs
-	router.Get("/users/:id/orgs", middlewares.CheckRoles("superadmin,admin,user"), controllers.GetOrgsByUserID)
+	router.Get("/users/:id/orgs", middlewares.CheckRoles("superadmin,admin,user"), handlers.GetOrgsByUserID)
 
 	// Rota: /orgs/:id/users
-	router.Get("/orgs/:id/users", middlewares.CheckRoles("superadmin,admin,user"), controllers.GetUsersByOrgID)
+	router.Get("/orgs/:id/users", middlewares.CheckRoles("superadmin,admin,user"), handlers.GetUsersByOrgID)
 }
 
 // Function to Register Routes
@@ -52,6 +52,7 @@ func RegisterRoutes(app *fiber.App) {
 	// Register Routes
 	registerUserRoutes(v1)
 	registerAuthRoutes(v1)
+
 	registerOrganizationsRoutes(v1)
 
 	registerRelationshipRoutes(v1)
