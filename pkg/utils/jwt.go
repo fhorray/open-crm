@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"open-crm/config"
+
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -12,38 +13,28 @@ import (
 
 type Claims struct {
 	UserId uuid.UUID `json:"user_id"`
+	Name   string    `json:"name"`
+	Email  string    `json:"email"`
 	jwt.RegisteredClaims
 }
 
 // Generates a new JWT token
-func GenerateToken(data map[string]any, expires time.Duration, audience, issuer string) (string, *Claims, error) {
+func GenerateToken(data *Claims, expires time.Duration, audience, issuer string) (string, *Claims, error) {
 	if data == nil {
 		return "", nil, errors.New("provide data")
 	}
 
 	// Extrai e valida user_id do payload
-	userIDRaw, ok := data["user_id"]
-	if !ok {
+	if data.UserId == uuid.Nil {
 		return "", nil, errors.New("missing user id in token data (expected key: 'user_id')")
 	}
-
-	var userID uuid.UUID
-	switch v := userIDRaw.(type) {
-	case uuid.UUID:
-		userID = v
-	case string:
-		parsed, err := uuid.Parse(v)
-		if err != nil {
-			return "", nil, fmt.Errorf("invalid user id format: %w", err)
-		}
-		userID = parsed
-	default:
-		return "", nil, errors.New("invalid user id type in token data")
-	}
+	userID := data.UserId
 
 	// Prepara os registered claims
 	claims := &Claims{
 		UserId: userID,
+		Name:   data.Name,
+		Email:  data.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expires)),
 			Issuer:    issuer,

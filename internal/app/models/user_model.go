@@ -8,19 +8,19 @@ import (
 
 type User struct {
 	CommonModel
-	OrganizationID *uuid.UUID   `gorm:"type:uuid" json:"organization_id"`
-	Organization   Organization `gorm:"foreignKey:OrganizationID" json:"organization"`
-	Roles          string       `gorm:"not null;default:user" json:"roles"`
-	Name           string       `gorm:"not null" json:"name"`
-	Email          string       `gorm:"unique;not null" json:"email"`
-	EmailVerified  bool         `gorm:"default:false" json:"email_verified"`
-	Image          string       `json:"image,omitempty"`
-	IsActive       bool         `gorm:"default:true" json:"is_active"`
-	Accounts       []Account    `gorm:"foreignKey:UserID" json:"accounts,omitempty"`
+	OrganizationID *uuid.UUID `gorm:"type:uuid" json:"organization_id"`
+	// Organization   organizations.Organization `gorm:"foreignKey:OrganizationID" json:"organization"`
+	Roles         string    `gorm:"not null;default:user" json:"roles"`
+	Name          string    `gorm:"not null" json:"name"`
+	Email         string    `gorm:"unique;not null" json:"email"`
+	EmailVerified bool      `gorm:"default:false" json:"email_verified"`
+	Image         string    `json:"image,omitempty"`
+	IsActive      bool      `gorm:"default:true" json:"is_active"`
+	Accounts      []Account `gorm:"foreignKey:UserID" json:"accounts,omitempty"`
 }
 
 func (User) TableName() string {
-	return "core.users"
+	return "auth.users"
 }
 
 // DTOS

@@ -9,10 +9,11 @@ import (
 
 type SessionRepository interface {
 	FindByUserAndProvider(userID uuid.UUID, provider string) (*models.Account, error)
-	Create(session *models.Session) error
+	Create(session *models.Session) (*models.Session, error)
 	FindByToken(token string) (*models.Session, error)
 	DeleteSession(token string) error
 	DeleteUserSessions(userId uuid.UUID) error
+	Update(session *models.Session) error
 }
 
 type sessionRepository struct {
@@ -36,14 +37,20 @@ func (r *sessionRepository) FindByUserAndProvider(userID uuid.UUID, provider str
 }
 
 // Create Session
-func (r *sessionRepository) Create(session *models.Session) error {
-	return r.db.Create(session).Error
+func (r *sessionRepository) Create(session *models.Session) (*models.Session, error) {
+	err := r.db.Create(session).Error
+	if err != nil {
+		return nil, err
+	}
+	return session, nil
 }
 
 // Find Session by Token
 func (r *sessionRepository) FindByToken(token string) (*models.Session, error) {
 	var session models.Session
-	err := r.db.Where("access_token = ?", token).First(&session).Error
+	err := r.db.
+		Where("refresh_token = ?", token).
+		First(&session).Error
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +59,22 @@ func (r *sessionRepository) FindByToken(token string) (*models.Session, error) {
 
 // Delete Session
 func (r *sessionRepository) DeleteSession(token string) error {
-	return r.db.Where("access_token = ?", token).Delete(&models.Session{}).Error
+	return r.db.Where("refresh_token = ?", token).Delete(&models.Session{}).Error
 }
 
 // Delete User Sessions
 func (r *sessionRepository) DeleteUserSessions(userId uuid.UUID) error {
 	return r.db.Where("user_id = ?", userId).Delete(&models.Session{}).Error
+}
+
+// Update Session
+func (r *sessionRepository) Update(session *models.Session) error {
+	return r.db.
+		Model(&models.Session{}).
+		Where("id = ?", session.ID).
+		Updates(map[string]interface{}{
+			"refresh_token":            session.RefreshToken,
+			"refresh_token_expires_at": session.RefreshTokenExpiresAt,
+			"updated_at":               session.UpdatedAt, // opcional, se você quiser forçar update
+		}).Error
 }

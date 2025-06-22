@@ -13,7 +13,7 @@ func ScalarHandler() fiber.Handler {
 	// Cria o handler padrão net/http.HandlerFunc do Scalar
 	scalarHTTPHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
-			SpecURL: "http://localhost:8787/docs/swagger.json", // caminho relativo
+			SpecURL: "./docs/docs.yaml", // caminho relativo
 			CustomOptions: scalar.CustomOptions{
 				PageTitle: "Simple API",
 			},

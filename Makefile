@@ -37,3 +37,11 @@ ifndef VERSION
 	$(error "Você precisa informar VERSION: make up-to VERSION=20240618120000")
 endif
 	$(GOOSE) -dir $(MIGRATIONS_DIR) $(DRIVER) "$(DSN)" up-to $(VERSION)
+
+
+# SWAGGER
+SWAGGER_INPUT=docs/openapi.yaml
+SWAGGER_OUTPUT=docs/docs.yaml
+
+swagger:
+	bunx swagger-cli bundle $(SWAGGER_INPUT) --outfile $(SWAGGER_OUTPUT) --type yaml

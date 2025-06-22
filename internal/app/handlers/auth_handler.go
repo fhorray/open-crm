@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"open-crm/internal/app/models"
 	"open-crm/internal/app/repositories"
@@ -18,7 +17,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// Register
+// Register Handler
 func Register(c *fiber.Ctx) error {
 	// Create repositories instances
 	userRepo := repositories.NewUserRepository(database.DB)
@@ -46,7 +45,8 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	authService := services.NewAuthService(userRepo, sessionRepo, accountRepo)
+	// Create Service
+	authService := services.NewAuthService(c, userRepo, sessionRepo, accountRepo)
 	sessionData, err := authService.Register(&payload)
 
 	if err != nil {
@@ -59,7 +59,7 @@ func Register(c *fiber.Ctx) error {
 	// Set cookien on client
 	c.Cookie(&fiber.Cookie{
 		Name:     "myapp.access_token",
-		Value:    sessionData.Session.AccessToken,
+		Value:    *sessionData.Session.AccessToken,
 		Expires:  sessionData.Session.AccessTokenExpiresAt,
 		HTTPOnly: true,
 		Secure:   true,
@@ -85,10 +85,13 @@ func Register(c *fiber.Ctx) error {
 
 // Login
 func Login(c *fiber.Ctx) error {
-	// Create repositories isntances
+	// Create repositories instances
 	userRepo := repositories.NewUserRepository(database.DB)
 	sessionRepo := repositories.NewSessionRepository(database.DB)
 	accountRepo := repositories.NewAccountRepository(database.DB)
+
+	// Crate Auth Service instance
+	authService := services.NewAuthService(c, userRepo, sessionRepo, accountRepo)
 
 	var body models.LoginRequestDTO
 	if err := c.BodyParser(&body); err != nil {
@@ -111,7 +114,6 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	authService := services.NewAuthService(userRepo, sessionRepo, accountRepo)
 	sessionData, err := authService.Login(&body)
 	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
@@ -123,7 +125,7 @@ func Login(c *fiber.Ctx) error {
 	// Setar cookies com tokens e expiração vindos do service
 	c.Cookie(&fiber.Cookie{
 		Name:     "myapp.access_token",
-		Value:    sessionData.Session.AccessToken,
+		Value:    *sessionData.Session.AccessToken,
 		Expires:  sessionData.Session.AccessTokenExpiresAt,
 		HTTPOnly: true,
 		Secure:   true,
@@ -183,7 +185,7 @@ func GetSession(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	rfToken := c.Cookies("myapp.refresh_token")
 
-	// Deve ter token de acesso ou refresh token
+	// must have the access token or refresh token
 	if !strings.HasPrefix(authHeader, "Bearer ") && rfToken == "" {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusUnauthorized,
@@ -199,45 +201,30 @@ func GetSession(c *fiber.Ctx) error {
 		})
 	}
 
-	// Tente encontrar sessão pelo access token, se não achar, tente pelo refresh token
+	// tries to get session by access token, if not found tries the refresh token
 	var session *models.Session
 	var err error
-	fmt.Println("ACCESS TOKEN: ", acToken)
 
-	if acToken != "" {
-		session, err = sessionRepo.FindByToken(acToken)
-
-		if err != nil || session == nil {
-			// tenta pelo refresh token
-			if rfToken != "" {
-				session, err = sessionRepo.FindByToken(rfToken)
-				if err != nil || session == nil {
-					return utils.SendResponse(c, utils.APIResponse{
-						Status:  http.StatusUnauthorized,
-						Message: "session not found",
-					})
-				}
-			} else {
-				return utils.SendResponse(c, utils.APIResponse{
-					Status:  http.StatusUnauthorized,
-					Message: "session not found",
-				})
-			}
-		}
-	} else if rfToken != "" {
+	if rfToken != "" {
 		session, err = sessionRepo.FindByToken(rfToken)
+
 		if err != nil || session == nil {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
 				Message: "session not found",
 			})
 		}
+	} else {
+		return utils.SendResponse(c, utils.APIResponse{
+			Status:  http.StatusUnauthorized,
+			Message: "session not found",
+		})
 	}
 
-	// Parse JWT para validar e pegar claims
+	// parse JWT to validate and get claims
 	tokenToParse := acToken
 	if tokenToParse == "" {
-		tokenToParse = session.AccessToken
+		tokenToParse = acToken
 	}
 	parsedToken, err := utils.ParseJWT(tokenToParse)
 	if err != nil {
@@ -255,7 +242,7 @@ func GetSession(c *fiber.Ctx) error {
 		})
 	}
 
-	userId, ok := claims["id"].(string)
+	userId, ok := claims["user_id"].(string)
 	if !ok {
 		return utils.SendResponse(c, utils.APIResponse{
 			Status:  http.StatusUnauthorized,
@@ -263,7 +250,7 @@ func GetSession(c *fiber.Ctx) error {
 		})
 	}
 
-	// Recupera o usuário pelo ID
+	// get user by id
 	userUUID, err := uuid.Parse(userId)
 	if err != nil {
 		return utils.SendResponse(c, utils.APIResponse{
@@ -280,17 +267,42 @@ func GetSession(c *fiber.Ctx) error {
 		})
 	}
 
-	// Retornar a sessão e o usuário
+	// response
 	return utils.SendResponse(c, utils.APIResponse{
 		Status: http.StatusOK,
 		Data: models.GetSessionResponseDTO{
 			User: utils.ToUserResponseDTO(*user),
-			Session: &models.Session{
-				AccessToken:           session.AccessToken,
+			Session: &models.SessionDTO{
+				ID:                    session.ID,
+				UserID:                user.ID,
+				UserAgent:             session.UserAgent,
+				IPAddress:             session.IPAddress,
 				RefreshToken:          session.RefreshToken,
-				AccessTokenExpiresAt:  session.AccessTokenExpiresAt,
 				RefreshTokenExpiresAt: session.RefreshTokenExpiresAt,
 			},
 		},
 	})
+}
+
+// Refresh Token
+func RefreshToken(c *fiber.Ctx) error {
+	// sessionRepo := repositories.NewSessionRepository(database.DB)
+	// userRepo := repositories.NewUserRepository(database.DB)
+
+	authHeader := c.Get("Authorization")
+	rfToken := c.Cookies("myapp.refresh_token")
+
+	// must have the access token or refresh token
+	if !strings.HasPrefix(authHeader, "Bearer ") && rfToken == "" {
+		return utils.SendResponse(c, utils.APIResponse{
+			Status:  http.StatusUnauthorized,
+			Message: "Unauthorized: not authenticated",
+		})
+	}
+
+	return utils.SendResponse(c, utils.APIResponse{
+		Status: http.StatusOK,
+		Data:   "Success",
+	})
+
 }

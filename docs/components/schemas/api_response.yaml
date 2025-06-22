@@ -1,0 +1,35 @@
+APIResponse:
+  type: object
+  properties:
+    success:
+      type: boolean
+      example: true
+    status:
+      type: integer
+      example: 200
+    message:
+      type: string
+      nullable: true
+      example: Operation successful
+    data:
+      nullable: true
+      description: Returned payload (can be of any type)
+    meta:
+      nullable: true
+      description: Additional information, such as pagination or count
+
+ErrorResponse:
+  type: object
+  properties:
+    success:
+      type: boolean
+      example: false
+    status:
+      type: integer
+      example: 401
+    message:
+      type: string
+      example: Unauthorized
+    meta:
+      nullable: true
+      description: Additional information or error context

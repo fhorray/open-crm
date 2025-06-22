@@ -1,0 +1,44 @@
+openapi: 3.1.0
+info:
+  title: Open CRM API
+  description: API for managing users, authentication, and organizations in the Open CRM system
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8787/v1
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Authentication
+    description: Endpoints for authentication purposes
+
+paths:
+  /auth/sign-in:
+    $ref: './paths/auth.yaml#/login'
+  /auth/sign-up:
+    $ref: './paths/auth.yaml#/register'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    APIResponse:
+      $ref: './components/schemas/api_response.yaml#/APIResponse'
+    ErrorResponse:
+      $ref: './components/schemas/api_response.yaml#/ErrorResponse'
+
+  responses:
+    Unauthorized:
+      $ref: './components/responses.yaml#/Unauthorized'
+    BadRequest:
+      $ref: './components/responses.yaml#/BadRequest'
+    NotFound:
+      $ref: './components/responses.yaml#/NotFound'
+    Ok:
+      $ref: './components/responses.yaml#/Ok'

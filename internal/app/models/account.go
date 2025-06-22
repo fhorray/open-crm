@@ -19,7 +19,7 @@ type Account struct {
 }
 
 func (Account) TableName() string {
-	return "core.accounts"
+	return "auth.accounts"
 }
 
 // DTOS

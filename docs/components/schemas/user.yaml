@@ -1,0 +1,38 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  organization_id:
+    type: string
+    format: uuid
+    nullable: true
+  name:
+    type: string
+  email:
+    type: string
+    format: email
+  email_verified:
+    type: boolean
+  roles:
+    type: string
+    example: user,superadmin,owner,admin
+  image:
+    type: string
+    nullable: true
+  is_active:
+    type: boolean
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+required:
+  - id
+  - name
+  - email
+  - roles
+  - is_active
+  - created_at
+  - updated_at

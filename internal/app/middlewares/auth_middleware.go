@@ -12,45 +12,33 @@ import (
 )
 
 func AuthMiddleware() fiber.Handler {
+
 	return func(c *fiber.Ctx) error {
-		// Ignorar autenticação para certas rotas
-		if strings.HasPrefix(c.Path(), "/v1/auth/sign-in") ||
-			strings.HasPrefix(c.Path(), "/v1/auth/sign-up") ||
+		// Rotas públicas (pode extrair para uma função se quiser)
+		if strings.HasPrefix(c.Path(), "/v1/auth") ||
 			strings.HasPrefix(c.Path(), "/reference") ||
 			strings.HasPrefix(c.Path(), "/swagger.json") {
 			return c.Next()
 		}
 
 		authHeader := c.Get("Authorization")
-		rfToken := c.Cookies("myapp.refresh_token")
-
-		// Deve ter access token ou refresh token
-		if !strings.HasPrefix(authHeader, "Bearer ") && rfToken == "" {
+		if !strings.HasPrefix(authHeader, "Bearer ") {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
-				Message: "Unauthorized: not authenticated",
+				Message: "Unauthorized: missing bearer token",
 			})
 		}
 
-		acToken := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
-
-		if acToken == "" {
+		accessToken := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
+		parsedToken, err := utils.ParseJWT(accessToken)
+		if err != nil || !parsedToken.Valid {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
-				Message: "Unauthorized: missing access token",
+				Message: "Unauthorized: invalid or expired token",
 			})
 		}
 
-		// Parse do JWT
-		parsedAcToken, err := utils.ParseJWT(acToken)
-		if err != nil {
-			return utils.SendResponse(c, utils.APIResponse{
-				Status:  http.StatusBadRequest,
-				Message: err.Error(),
-			})
-		}
-
-		claims, ok := parsedAcToken.Claims.(jwt.MapClaims)
+		claims, ok := parsedToken.Claims.(jwt.MapClaims)
 		if !ok {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
@@ -58,12 +46,11 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		// Extrair user id do claims
 		userIDStr, ok := claims["user_id"].(string)
 		if !ok {
 			return utils.SendResponse(c, utils.APIResponse{
 				Status:  http.StatusUnauthorized,
-				Message: "Unauthorized: invalid token claims (user_id missing)",
+				Message: "Unauthorized: missing user_id",
 			})
 		}
 
@@ -83,9 +70,7 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		// Salva o usuário no contexto local
 		c.Locals("user", *user)
-
 		return c.Next()
 	}
 }

@@ -4,6 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE SCHEMA IF NOT EXISTS public;
 CREATE SCHEMA IF NOT EXISTS core;
+CREATE SCHEMA IF NOT EXISTS auth;
 
 -- Create Tables
 CREATE TABLE core.organizations (
@@ -15,7 +16,7 @@ CREATE TABLE core.organizations (
   updated_at timestamp DEFAULT now()
 );
 
-CREATE TABLE core.users (
+CREATE TABLE auth.users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   organization_id uuid REFERENCES core.organizations(id) ON DELETE CASCADE,
   roles text NOT NULL DEFAULT 'user',
@@ -29,10 +30,10 @@ CREATE TABLE core.users (
 );
 
 -- This table is used for users sign-up inside an organization, the org must create a CODE and share it with the user
-CREATE TABLE core.invitations (
+CREATE TABLE auth.invitations (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   organization_id uuid REFERENCES core.organizations(id) ON DELETE CASCADE,
-  invited_by uuid REFERENCES core.users(id) ON DELETE CASCADE,
+  invited_by uuid REFERENCES auth.users(id) ON DELETE CASCADE,
   expires_at timestamp NOT NULL,
   code text NOT NULL UNIQUE,
   invited_email  text NOT NULL unique,
@@ -40,9 +41,9 @@ CREATE TABLE core.invitations (
 );
 
 -- ACCOUNTS TABLE
-CREATE TABLE core.accounts (
+CREATE TABLE auth.accounts (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id uuid  NOT NULL REFERENCES core.users(id) ON DELETE CASCADE,
+  user_id uuid  NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   provider_id text NOT NULL DEFAULT 'credential', -- It can be "google", "tiktok" etc...
   access_token text,
   refresh_token text,
@@ -55,12 +56,13 @@ CREATE TABLE core.accounts (
   updated_at timestamp DEFAULT now()
 );
 
-CREATE TABLE core.sessions (
+-- AUTH TABLES
+CREATE TABLE auth.sessions (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id uuid NOT NULL REFERENCES core.users(id) ON DELETE CASCADE,
-  access_token text NOT NULL UNIQUE,
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   refresh_token text NOT NULL UNIQUE,
-  access_token_expires_at timestamp NOT NULL,
+  user_agent text,
+  ip_address text,
   refresh_token_expires_at timestamp NOT NULL,
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now()
@@ -70,5 +72,6 @@ CREATE TABLE core.sessions (
 -- +goose Down
 -- +goose StatementBegin
 DROP SCHEMA IF EXISTS core CASCADE;
+DROP SCHEMA IF EXISTS auth CASCADE;
 CREATE SCHEMA IF NOT EXISTS public;
 -- +goose StatementEnd

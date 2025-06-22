@@ -1,0 +1,74 @@
+#-- AUTH
+
+# Login
+LoginRequest:
+  type: object
+  required:
+    - email
+    - password
+  properties:
+    email:
+      type: string
+      format: email
+      example: user@example.com
+    password:
+      type: string
+      minLength: 6
+      example: secret123
+
+RegisterRequest:
+  type: object
+  required:
+    - name
+    - email
+    - password
+  properties:
+    name:
+      type: string
+      minLength: 6
+    email:
+      type: string
+      format: email
+      example: user@example.com
+    password:
+      type: string
+      minLength: 6
+      example: secret123
+
+#-- Session
+
+# Session Response
+SessionDTO:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    user_id:
+      type: string
+      format: uuid
+    access_token:
+      type: string
+      nullable: true
+    refresh_token:
+      type: string
+    access_token_expires_at:
+      type: string
+      format: date-time
+    refresh_token_expires_at:
+      type: string
+      format: date-time
+    user_agent:
+      type: string
+      nullable: true
+    ip_address:
+      type: string
+      nullable: true
+
+SessionResponse:
+  type: object
+  properties:
+    user:
+      $ref: '../schemas/user.yaml'
+    session:
+      $ref: '#/SessionDTO'

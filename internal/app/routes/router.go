@@ -15,6 +15,7 @@ func registerAuthRoutes(router fiber.Router) {
 	r.Post("/sign-in", handlers.Login)
 	r.Post("/sign-up", handlers.Register)
 	r.Post("/sign-out", handlers.Logout)
+	r.Post("/refresh", handlers.RefreshToken)
 }
 
 // Users
@@ -56,4 +57,7 @@ func RegisterRoutes(app *fiber.App) {
 	registerOrganizationsRoutes(v1)
 
 	registerRelationshipRoutes(v1)
+
+	// Static Files
+	// v1.Static("/docs/openapi.yaml", "./docs/openapi.yaml")
 }

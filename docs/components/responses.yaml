@@ -1,0 +1,27 @@
+Unauthorized:
+  description: Unauthorized access
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/api_response.yaml#/ErrorResponse'
+
+BadRequest:
+  description: Bad request due to invalid input
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/api_response.yaml#/ErrorResponse'
+
+NotFound:
+  description: Resource not found
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/api_response.yaml#/ErrorResponse'
+
+Ok:
+  description: Successful operation
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/api_response.yaml#/APIResponse'

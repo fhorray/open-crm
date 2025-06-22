@@ -1,0 +1,51 @@
+login:
+  post:
+    tags:
+      - Authentication
+    summary: Log in a user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/auth.yaml#/LoginRequest'
+    responses:
+      '200':
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '../components/schemas/api_response.yaml#/APIResponse'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '../components/schemas/auth.yaml#/SessionResponse'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+
+register:
+  post:
+    tags:
+      - Authentication
+    summary: Sing up
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/auth.yaml#/RegisterRequest'
+    responses:
+      '200':
+        description: Sign-up successful
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '../components/schemas/api_response.yaml#/APIResponse'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '../components/schemas/auth.yaml#/SessionResponse'
+      '500':
+        $ref: '../components/responses.yaml#/BadRequest'

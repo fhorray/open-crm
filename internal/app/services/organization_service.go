@@ -38,7 +38,7 @@ func GetUsersByOrgID(orgID string) ([]models.UserResponseDTO, error) {
 	var users []models.UserResponseDTO
 
 	err := database.DB.
-		Table("core.users").
+		Table("auth.users").
 		Where("organization_id = ?", orgID).
 		Find(&users).Error
 
@@ -53,7 +53,7 @@ func GetUsersByOrgID(orgID string) ([]models.UserResponseDTO, error) {
 func GetOrgByUserID(userID string) (*models.OrganizationResponseDTO, error) {
 	var user models.User
 	err := database.DB.
-		Table("core.users").
+		Table("auth.users").
 		Where("id = ?", userID).
 		First(&user).Error
 

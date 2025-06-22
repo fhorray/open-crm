@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_TZ6GSZH7pJ
+createdAt: 2025-06-22T03:13:04.146001
+updatedAt: 2025-06-22T03:16:55.454514
+workspaceId: wk_ZZMqofy76K
+folderId: fl_kmx2qLh6pP
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: REFRESH TOKEN
+sortPriority: -1750121266256.999
+url: ${[ URL ]}/auth/refresh
+urlParameters: []
